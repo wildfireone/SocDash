@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <% include head %>
+</head>
+
+<body class="container">
+
+  <header>
+    <% include header %>
+  </header>
+
+  <main>
+    <div class="jumbotron">
+      <h1>This is great</h1>
+      <p>Welcome to templating using EJS</p>
+
+      <h2>Variable</h2>
+      <p>
+        <%= tagline %>
+      </p>
+
+      <h2>Loop</h2>
+
+      <div>
+        <ul id="messages"></ul>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+          var socket = io();
+          socket.on('info', function(msg){
+            $('#messages').empty();
+              //$('#messages').append($('<li>').text(msg));
+              console.log(msg);
+          });
+          socket.on('data', function(msg){
+            $('#messages').empty();
+              //$('#messages').append($('<li>').text("data: "+ msg));
+
+              for(var roomIdx in msg.rooms){
+                var room = msg.rooms[roomIdx];
+                $('#messages').append($('<li>').text("room: "+ room['room'] +" now: "+room['now'] +" next: "+room['next']));
+              }
+
+          });
+        </script>
+        <ul id="messages"></ul>
+      </div>
+
+
+    </div>
+  </main>
+
+  <footer>
+    <% include footer %>
+  </footer>
+
+</body>
+
+</html>
