@@ -7,44 +7,48 @@
 
 <body class="container">
 
-  <header>
+  <!-- <header>
     <% include header %>
-  </header>
+  </header> -->
 
   <main>
-    <div class="jumbotron">
-      <h1>This is great</h1>
-      <p>Welcome to templating using EJS</p>
 
-      <h2>Variable</h2>
-      <p>
-        <%= tagline %>
-      </p>
-
-      <h2>Loop</h2>
 
       <div>
-        <ul id="messages"></ul>
         <script src="/socket.io/socket.io.js"></script>
         <script>
           var socket = io();
           socket.on('info', function(msg){
-            $('#messages').empty();
+
               //$('#messages').append($('<li>').text(msg));
               console.log(msg);
           });
           socket.on('data', function(msg){
-            $('#messages').empty();
+            $('#datatable').empty();
               //$('#messages').append($('<li>').text("data: "+ msg));
 
               for(var roomIdx in msg.rooms){
                 var room = msg.rooms[roomIdx];
-                $('#messages').append($('<li>').text("room: "+ room['room'] +" now: "+room['now'] +" next: "+room['next']));
+                $('#datatable').append('<tr><td>'+room['room']+'</td><td>'+room['now']+'</td><td>'+room['next']+'</td></td>');
               }
 
           });
         </script>
-        <ul id="messages"></ul>
+        <h1><span class="blue">&lt;</span>CSDM<span class="blue">&gt;</span> <span class="yellow">Now and Next</pan></h1>
+
+
+<table class="container">
+	<thead>
+		<tr>
+			<th><h1>Room</h1></th>
+			<th><h1>Now</h1></th>
+			<th><h1>Next</h1></th>
+		</tr>
+	</thead>
+	<tbody id="datatable">
+		
+	</tbody>
+</table>
       </div>
 
 
