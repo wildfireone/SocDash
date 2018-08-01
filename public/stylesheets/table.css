@@ -3,7 +3,7 @@
  * @Date:   25-Jul-182018
  * @Filename: table.css
  * @Last modified by:   john
- * @Last modified time: 25-Jul-182018
+ * @Last modified time: 26-Jul-182018
  */
  /*
  	Side Navigation Menu V2, RWD
@@ -121,6 +121,16 @@
    transition-timing-function: line;
  }
 
+ .free{
+   background-color:#50AA50;
+   color: #FFFFFF;
+   font-weight: bold;
+ }
+ .busy{
+   background-color: #AA5050;
+   color: #FFFFFF;
+   font-weight: bold;
+ }
  @media (max-width: 800px) {
  .container td:nth-child(4),
  .container th:nth-child(4) { display: none; }

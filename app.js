@@ -3,7 +3,7 @@
  * @Date:   23-Mar-182018
  * @Filename: server.js
  * @Last modified by:   john
- * @Last modified time: 25-Jul-182018
+ * @Last modified time: 26-Jul-182018
  */
 
 // server.js
@@ -83,6 +83,7 @@ function getData(callback) {
     if (n < 0) {
       n = 6;
     }
+    n=2;
     console.log(n)
     for (var x = 0; x < obj.length; x++) {
       var room = {}
@@ -95,6 +96,8 @@ function getData(callback) {
       if (events.length == 0) {
         room.now = "Free until close";
         room.next = "Free until close";
+        room.nowstate = 'free';
+        room.nextstate = 'free';
       } else {
         var hour = d.getHours();
         hour = (hour < 10 ? "0" : "") + hour;
@@ -116,14 +119,18 @@ function getData(callback) {
           if (minutesinday > startinday && minutesinday < endinday) {
 
             room.now = events[e].event + " Started at " + events[e].start + " ends at " + events[e].end
+            room.nowstate = 'busy';
             if (e + 1 < events.length) {
               if (events[e].end == events[e + 1].start) {
                 room.next = events[e + 1].event + " Starts at " + events[e + 1].start + " ends at " + events[e + 1].end
+                room.nextstate = 'busy';
               } else {
                 room.next = "Free until " + events[e + 1].start;
+                room.nextstate = 'free';
               }
             } else {
               room.next = 'Free until close'
+              room.nextstate = 'free';
             }
             //return;
           }

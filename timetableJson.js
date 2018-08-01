@@ -3,7 +3,7 @@
  * @Date:   05-Jun-182018
  * @Filename: index.js
  * @Last modified by:   john
- * @Last modified time: 25-Jul-182018
+ * @Last modified time: 01-Aug-182018
  */
 
 
@@ -59,7 +59,11 @@ var rooms = [{
 }, {
   room: "n533",
   roomID: "r102829"
-}];
+}, {
+  room: "Green-Room",
+  roomID: "r59135"
+}
+];
 
 var outputdata = [];
 
@@ -166,7 +170,7 @@ function getCurrentWeek(result,i) {
     }
     daydate = daywholedate.split('\n')[1];
     //adding a week for testing
-    var weekstart = moment().add(7, 'days').startOf('isoWeek').format('L');
+    var weekstart = moment().startOf('isoWeek').format('L');
     if(weekstart == daydate){
       return w;
 

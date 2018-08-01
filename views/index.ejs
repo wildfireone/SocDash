@@ -29,7 +29,14 @@
 
               for(var roomIdx in msg.rooms){
                 var room = msg.rooms[roomIdx];
-                $('#datatable').append('<tr><td>'+room['room']+'</td><td>'+room['now']+'</td><td>'+room['next']+'</td></td>');
+                var nowstring = ''
+                var nextstring = ''
+                if(room['nowstate']=='busy'){nowstring = '<td class="busy">'+room['now']+'</td>'}
+                else{nowstring = '<td class="free">'+room['now']+'</td>'}
+                if(room['nextstate']=='busy'){nextstring = '<td class="busy">'+room['next']+'</td>'}
+                else{nextstring = '<td class="free">'+room['next']+'</td>'}
+
+                $('#datatable').append('<tr><td>'+room['room']+'</td>'+nowstring+''+nextstring+'</td>');
               }
 
           });
@@ -46,7 +53,7 @@
 		</tr>
 	</thead>
 	<tbody id="datatable">
-		
+
 	</tbody>
 </table>
       </div>
