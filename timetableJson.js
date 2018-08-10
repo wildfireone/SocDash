@@ -19,15 +19,16 @@
 //     });
 //
 //     pdfParser.loadPDF("test/r102829.pdf");
-
+//fuction export for module to be called by app.js
 module.exports = {
   getTimetables: function() {
     console.log(Date.now());
     getNextFile(0);
+    //get timetables every 24 hours
     setInterval(retTimetables, 86400000);
   }
 }
-
+//fuction to start incremental timetable parsing
 function retTimetables(){
   console.log(Date.now());
   getNextFile(0);
@@ -73,43 +74,29 @@ var rooms = [{
 
 var outputdata = [];
 
-
+//this function returns when the PDF parser successfully completes
 function success(result) {
-  //console.log(JSON.stringify(result));
+  //json object to hold week data
   var output = {
     "week": []
   };
   var currentWeek = getCurrentWeek(result)
   var day = result.pageTables[currentWeek];
-  //console.log(currentWeek);
+//the timetable format we use stores day data between columns 11 and 18
   for (var i = 11; i < 18; i++) {
-    //for (var j=0 ;i<result.pageTables[0].tables[i].length;j++){
-
-
     var daydata = day.tables[i];
-    //output.days.push(getDay(i));
-    //console.log(JSON.stringify());
-    //if(result.pageTables[0].tables[i][j]!=""){
-    //console.log("j: "+result.pageTables[0].tables[i][j]);
-    //}
-    //}
-    //console.log(day);
-
+    //json object to hold day data
     var dayoutput = {
       "day": getDay(i),
       "events": []
     };
 
-
+//this is basically a manual parser to get the data needed. Everything is pushed into the output JSON array
     for (var j = 1; j < daydata.length; j++) {
       if (daydata[j] != "") {
-        //console.log(getTime(j));
-        //console.log(JSON.stringify(daydata[j]));
-        //console.log(daydata.indexOf("y"));
-        //  console.log(daydata[j].split('y')[0]);
+
         if (daydata[j].indexOf("\n") < daydata[j].indexOf(",")) {
           var event = daydata[j].split('\n')[0]
-          //console.log("event: " + event);
           var start = daydata[j].split('\n')[1].split(',')[1].split('-')[0];
           var end = daydata[j].split('\n')[1].split(',')[1].split('-')[1];
 
@@ -123,10 +110,8 @@ function success(result) {
           })
         } else {
           var event = daydata[j].split(',')[0]
-          //console.log("event: " + event);
           var start = daydata[j].split('\n')[0].split('-')[0];
           var end = daydata[j].split('\n')[0].split('-')[1];
-          //console.log('start: ' + start + ' end: ' + end);
           dayoutput.events.push({
             "event": event,
             "start": start,
@@ -141,7 +126,6 @@ function success(result) {
   }
   //get current file name (i.e the files that has just closed)
   var filename = path.basename(result.pdfPath)
-  //console.log(filename)
   rID = filename.split('_')[0] //split on '_' to get ID and Name
   rN = filename.split('_')[1]
   rN = rN.substring(0, rN.length - 4); //drop extension
@@ -191,16 +175,17 @@ function error(err) {
 }
 
 
-
+//function to identify the next timetable file to be parsed
 function getNextFile(fileNo) {
   var i = fileNo
   var file = fs.createWriteStream("./timetables/" + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
+  //fire the link to the uni timetable based on the room ID.
   var request = http.get("http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/" + rooms[i].roomID + ".pdf", function(response) {
     //console.log(response);
+    //pipe file the response to output stream (could probably be parsed in memory more efficiently)
     response.pipe(file);
-
   });
-
+//when this specific file is finished saving start mining it foe the timetable info.
   file.on('close', function() {
     var filepath = this.path;
     console.log('request finished downloading file ' + filepath);
@@ -217,6 +202,7 @@ function getNextFile(fileNo) {
       roomName: rN
     });
     //PDF parsed
+    //extract data
     pdf_table_extractor(filepath, success, error);
 
     //.then(function(output){
@@ -225,6 +211,7 @@ function getNextFile(fileNo) {
     //console.log(outputdata);
     //}
     //});
+    //when done check if this is the last file, if so stop otherwise keep going
     if (fileNo < rooms.length - 1) {
       getNextFile(fileNo + 1);
     } else {
@@ -237,7 +224,7 @@ function getNextFile(fileNo) {
 
 
 
-
+//helper functions unused
 function getDay(dayno) {
   switch (dayno) {
     case 11:

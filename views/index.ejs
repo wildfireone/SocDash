@@ -18,12 +18,15 @@
         <script src="/socket.io/socket.io.js"></script>
         <script>
           var socket = io();
+          //on first connection log the connection id
           socket.on('info', function(msg){
 
               //$('#messages').append($('<li>').text(msg));
               console.log(msg);
           });
+          //on recieving data parse the data and add to the table.
           socket.on('data', function(msg){
+            //console.log(data) //uncomment to see the json data in the console.
             $('#datatable').empty();
               //$('#messages').append($('<li>').text("data: "+ msg));
 

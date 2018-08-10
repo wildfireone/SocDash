@@ -22,43 +22,17 @@ const fs = require('fs');
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
 
-// use res.render to load up an ejs view file
-
-
-
-app.get('/', function(req, res) {
-  var drinks = [{
-      name: 'Bloody Mary',
-      drunkness: 3
-    },
-    {
-      name: 'Martini',
-      drunkness: 5
-    },
-    {
-      name: 'Scotch',
-      drunkness: 10
-    }
-  ];
-  var tagline = "Commit messages are memory.";
-
-  res.render('index', {
-    drinks: drinks,
-    tagline: tagline
-  });
-});
-
-// about page
-app.get('/about', function(req, res) {
-  res.render('about');
-});
-
+//start the timetables process
 timetables.getTimetables();
+
+//start the server
 http.listen(6000, function() {
   console.log('6000 is the magic port');
+  //check for new data every minute.
   setInterval(intervalFunc, 60000);
 });
 
+//socket io incomming. When a new client connects to the system they will get the latest data
 io.on('connection', function(socket) {
 console.log('a user connected');
 socket.emit('info', 'Connected to server...socket:' + socket.id);
@@ -70,7 +44,7 @@ getData(function(response) {
 
 });
 
-
+//function to read the json produced by the timetale parser.
 function getData(callback) {
   var obj;
   var response = {}
@@ -85,6 +59,7 @@ function getData(callback) {
     }
     n=2;
     console.log(n)
+    //this generats a JSON paylod to be sent to the client. Every room with the now and next items
     for (var x = 0; x < obj.length; x++) {
       var room = {}
       room.room = obj[x].roomName;
@@ -145,6 +120,7 @@ function getData(callback) {
   });
 }
 
+//every minute emit the new data to any (all) listening client
 function intervalFunc() {
   getData(function(response) {
     io.emit('data', response);
