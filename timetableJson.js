@@ -3,7 +3,7 @@
  * @Date:   05-Jun-182018
  * @Filename: index.js
  * @Last modified by:   john
- * @Last modified time: 01-Aug-182018
+ * @Last modified time: 10-Aug-182018
  */
 
 
@@ -22,10 +22,16 @@
 
 module.exports = {
   getTimetables: function() {
+    console.log(Date.now());
     getNextFile(0);
+    setInterval(retTimetables, 86400000);
   }
 }
 
+function retTimetables(){
+  console.log(Date.now());
+  getNextFile(0);
+}
 
 
 
