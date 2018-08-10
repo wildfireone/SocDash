@@ -54,8 +54,8 @@ app.get('/about', function(req, res) {
 });
 
 timetables.getTimetables();
-http.listen(8080, function() {
-  console.log('8080 is the magic port');
+http.listen(3000, function() {
+  console.log('3000 is the magic port');
   setInterval(intervalFunc, 60000);
 });
 
