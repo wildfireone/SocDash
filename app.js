@@ -3,7 +3,7 @@
  * @Date:   23-Mar-182018
  * @Filename: server.js
  * @Last modified by:   john
- * @Last modified time: 26-Jul-182018
+ * @Last modified time: 10-Aug-182018
  */
 
 // server.js
@@ -88,6 +88,7 @@ function getData(callback) {
     for (var x = 0; x < obj.length; x++) {
       var room = {}
       room.room = obj[x].roomName;
+      room.id=obj[x].roomID;
 
       var week = obj[x].timetable.week[n];
       var day = week.day;

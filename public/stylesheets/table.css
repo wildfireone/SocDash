@@ -3,7 +3,7 @@
  * @Date:   25-Jul-182018
  * @Filename: table.css
  * @Last modified by:   john
- * @Last modified time: 26-Jul-182018
+ * @Last modified time: 10-Aug-182018
  */
  /*
  	Side Navigation Menu V2, RWD
@@ -23,7 +23,7 @@
    font-weight: 300;
    line-height: 1.42em;
    color:#A7A1AE;
-   background-color:#1F2739;
+   background-color:#eee;
  }
 
  h1 {
@@ -58,7 +58,7 @@
  	  font-weight: bold;
  	  font-size: 1em;
    text-align: left;
-   color: #185875;
+   color: #eee;
  }
 
  .container td {

@@ -35,13 +35,21 @@
                 else{nowstring = '<td class="free">'+room['now']+'</td>'}
                 if(room['nextstate']=='busy'){nextstring = '<td class="busy">'+room['next']+'</td>'}
                 else{nextstring = '<td class="free">'+room['next']+'</td>'}
-
-                $('#datatable').append('<tr><td>'+room['room']+'</td>'+nowstring+''+nextstring+'</td>');
+                var roomlink = room['id'];
+                console.log(roomlink)
+                $('#datatable').append('<tr class="roomrow" id="'+roomlink+'"> <td>'+room['room']+'</td>'+nowstring+''+nextstring+'</tr>');
               }
+              $('.roomrow').click(function(event) {
+
+              if(event.target.parentNode.id){
+                window.open('http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/'+event.target.parentNode.id+'.pdf', 'Room Timetable')
+              }
+
+                });
 
           });
         </script>
-        <h1><span class="blue">&lt;</span>CSDM<span class="blue">&gt;</span> <span class="yellow">Now and Next</pan></h1>
+        <h1><span class="blue">&lt;</span>CSDM<span class="blue">&gt;</span> <span class="blue">Now and Next</pan></h1>
 
 
 <table class="container">
