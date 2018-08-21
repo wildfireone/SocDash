@@ -32,7 +32,7 @@ module.exports = {
   }
 }
 
-v
+
 //fuction to start incremental timetable parsing
 function retTimetables(){
   console.log(Date.now());
