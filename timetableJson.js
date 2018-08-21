@@ -26,7 +26,8 @@ var schedule = require('node-schedule');
 module.exports = {
   getTimetables: function() {
     console.log(Date.now());
-    getNextFile(0);
+    var timestamp = new Date(Date.now()).toLocaleString();
+    getNextFile(0,timestamp);
     //get timetables every 24 hours
     schedule.scheduleJob('0 1 * * *', retTimetables);
   }
