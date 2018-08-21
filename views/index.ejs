@@ -39,7 +39,7 @@
                 if(room['nextstate']=='busy'){nextstring = '<td class="busy">'+room['next']+'</td>'}
                 else{nextstring = '<td class="free">'+room['next']+'</td>'}
                 var roomlink = room['id'];
-                console.log(roomlink)
+                console.log(room['timestamp'])
                 $('#datatable').append('<tr class="roomrow" id="'+roomlink+'"> <td>'+room['room']+'</td>'+nowstring+''+nextstring+'</tr>');
               }
               $('.roomrow').click(function(event) {

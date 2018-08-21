@@ -70,6 +70,7 @@ function getData(callback) {
       var room = {}
       room.room = obj[x].roomName;
       room.id=obj[x].roomID;
+      room.timestamp = obj[x].timestamp;
 
       var week = obj[x].timetable.week[n];
       var day = week.day;

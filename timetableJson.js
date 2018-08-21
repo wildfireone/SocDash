@@ -35,8 +35,8 @@ module.exports = {
 
 //fuction to start incremental timetable parsing
 function retTimetables(){
-  console.log(Date.now());
-  getNextFile(0);
+  var timestamp = new Date(Date.now()).toLocaleString();
+  getNextFile(0, timestamp);
 }
 
 
@@ -181,7 +181,7 @@ function error(err) {
 
 
 //function to identify the next timetable file to be parsed
-function getNextFile(fileNo) {
+function getNextFile(fileNo, ts) {
   var i = fileNo
   var file = fs.createWriteStream("./timetables/" + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
   //fire the link to the uni timetable based on the room ID.
@@ -204,7 +204,8 @@ function getNextFile(fileNo) {
     console.log("got data for roomID " + rID + " & roomName " + rN);
     outputdata.push({
       roomID: rID,
-      roomName: rN
+      roomName: rN,
+      timestamp:ts
     });
     //PDF parsed
     //extract data
