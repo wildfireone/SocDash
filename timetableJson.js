@@ -3,7 +3,7 @@
  * @Date:   05-Jun-182018
  * @Filename: index.js
  * @Last modified by:   john
- * @Last modified time: 10-Aug-182018
+ * @Last modified time: 21-Aug-182018
  */
 
 
@@ -20,14 +20,19 @@
 //
 //     pdfParser.loadPDF("test/r102829.pdf");
 //fuction export for module to be called by app.js
+
+var schedule = require('node-schedule');
+
 module.exports = {
   getTimetables: function() {
     console.log(Date.now());
     getNextFile(0);
     //get timetables every 24 hours
-    setInterval(retTimetables, 86400000);
+    schedule.scheduleJob('0 1 * * *', retTimetables);
   }
 }
+
+v
 //fuction to start incremental timetable parsing
 function retTimetables(){
   console.log(Date.now());
