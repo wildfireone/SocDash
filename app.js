@@ -3,7 +3,7 @@
  * @Date:   23-Mar-182018
  * @Filename: server.js
  * @Last modified by:   john
- * @Last modified time: 10-Aug-182018
+ * @Last modified time: 21-Aug-182018
  */
 
 // server.js
@@ -21,6 +21,12 @@ const fs = require('fs');
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
+
+app.get('/', function(req, res) {
+
+  var tagline = "Commit messages are memory.";
+   res.render('index');
+});
 
 //start the timetables process
 timetables.getTimetables();
