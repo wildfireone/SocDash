@@ -32,7 +32,7 @@ app.get('/', function(req, res) {
 timetables.getTimetables();
 
 //start the server
-var port = 8080;
+var port = 6000;
 http.listen(port, function() {
   console.log(port +' is the magic port');
   //check for new data every minute.
@@ -94,7 +94,7 @@ function getData(callback) {
           room.next = "Free until close";
           room.nowstate = 'free';
           room.nextstate = 'free';
-        
+
         for (var e = 0; e < events.length; e++) {
 
           var starthours = parseInt(events[e].start.split(':')[0]);
