@@ -182,6 +182,7 @@ function error(err) {
 
 //function to identify the next timetable file to be parsed
 function getNextFile(fileNo, ts) {
+  console.log("timestamp: "+ts)
   var i = fileNo
   var file = fs.createWriteStream("./timetables/" + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
   //fire the link to the uni timetable based on the room ID.
@@ -219,7 +220,7 @@ function getNextFile(fileNo, ts) {
     //});
     //when done check if this is the last file, if so stop otherwise keep going
     if (fileNo < rooms.length - 1) {
-      getNextFile(fileNo + 1);
+      getNextFile(fileNo + 1,ts);
     } else {
       //console.log(outputdata);
     }
