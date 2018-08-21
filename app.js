@@ -32,8 +32,9 @@ app.get('/', function(req, res) {
 timetables.getTimetables();
 
 //start the server
-http.listen(6000, function() {
-  console.log('6000 is the magic port');
+var port = 8080;
+http.listen(port, function() {
+  console.log(port +' is the magic port');
   //check for new data every minute.
   setInterval(intervalFunc, 60000);
 });
@@ -88,17 +89,23 @@ function getData(callback) {
         //console.log(hour + ' ' + min)
         min = (min < 10 ? "0" : "") + min;
         var minutesinday = parseInt(min) + (hour * 60);
-        room.now = 'Free';
+
+          room.now = "Free";
+          room.next = "Free until close";
+          room.nowstate = 'free';
+          room.nextstate = 'free';
+        
         for (var e = 0; e < events.length; e++) {
+
           var starthours = parseInt(events[e].start.split(':')[0]);
           var startmins = parseInt(events[e].start.split(':')[1]);
-          //console.log(starthours + ' ' + startmins)
+          console.log(starthours + ' ' + startmins)
           var endhours = parseInt(events[e].end.split(':')[0]);
           var endmins = parseInt(events[e].end.split(':')[1]);
-          //console.log(endhours + ' ' + endmins)
+          console.log(endhours + ' ' + endmins)
           var startinday = startmins + (starthours * 60);
           var endinday = endmins + (endhours * 60);
-          //console.log(startinday + ' ' + minutesinday + ' ' +endinday)
+          console.log(startinday + ' ' + minutesinday + ' ' +endinday)
           if (minutesinday > startinday && minutesinday < endinday) {
 
             room.now = events[e].event + " Started at " + events[e].start + " ends at " + events[e].end
@@ -117,6 +124,7 @@ function getData(callback) {
             }
             //return;
           }
+
         }
 
 
