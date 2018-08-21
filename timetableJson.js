@@ -48,29 +48,34 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment')
 moment.locale('en-gb');
-var rooms = [{
-  room: "n523",
+var rooms = [
+  {
+  room: "n424 - CISCO Lab",
+  roomID: "r102889"
+  },
+  {
+  room: "n523 - Security Lab",
   roomID: "r102823"
 }, {
-  room: "n525",
+  room: "n525 - Project Lab",
   roomID: "r102824"
 }, {
-  room: "n526",
+  room: "n526 - Usability Lab",
   roomID: "r102891"
 }, {
-  room: "n527",
+  room: "n527 - CAD Lab",
   roomID: "r102825"
 }, {
-  room: "n528",
+  room: "n528 - PG Lab",
   roomID: "r102826"
 }, {
-  room: "n529",
+  room: "n529 - PG Lab",
   roomID: "r102827"
 }, {
-  room: "n530",
+  room: "n530 - Multimedia Lab",
   roomID: "r102828"
 }, {
-  room: "n533",
+  room: "n533 - Big Lab",
   roomID: "r102829"
 }, {
   room: "Green-Room",
