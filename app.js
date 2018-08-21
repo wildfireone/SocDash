@@ -13,9 +13,11 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var timetables = require('./timetableJson');
+var flipit = require('./flipreverseip');
+const requestIp = require('request-ip');
 const fs = require('fs');
 
-
+var args = process.argv.slice(2);
 
 
 // set the view engine to ejs
@@ -28,11 +30,21 @@ app.get('/', function(req, res) {
    res.render('index');
 });
 
+app.get('/ping', function(req, res) {
+  var clientIp = requestIp.getClientIp(req);
+  console.log(clientIp);
+  //console.log(clientIp + " "+flipit.reverseLookup(req.connection.remoteAddress));
+
+});
+
 //start the timetables process
 timetables.getTimetables();
 
 //start the server
 var port = 6000;
+if(args[0]){
+  port = args[0];
+}
 http.listen(port, function() {
   console.log(port +' is the magic port');
   //check for new data every minute.
@@ -99,13 +111,13 @@ function getData(callback) {
 
           var starthours = parseInt(events[e].start.split(':')[0]);
           var startmins = parseInt(events[e].start.split(':')[1]);
-          console.log(starthours + ' ' + startmins)
+          //console.log(starthours + ' ' + startmins)
           var endhours = parseInt(events[e].end.split(':')[0]);
           var endmins = parseInt(events[e].end.split(':')[1]);
-          console.log(endhours + ' ' + endmins)
+          //console.log(endhours + ' ' + endmins)
           var startinday = startmins + (starthours * 60);
           var endinday = endmins + (endhours * 60);
-          console.log(startinday + ' ' + minutesinday + ' ' +endinday)
+          //console.log(startinday + ' ' + minutesinday + ' ' +endinday)
           if (minutesinday > startinday && minutesinday < endinday) {
 
             room.now = events[e].event + " Started at " + events[e].start + " ends at " + events[e].end
