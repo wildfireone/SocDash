@@ -310,7 +310,45 @@ strong {
     display: none;
   }
 }
-
+/* Tab Styling
+==================================== */
+.Tablist {
+  display: flex;
+  flex-direction: row;
+  margin-left: -3px;
+}
+@media all and (min-width: 768px) {
+  .Tablist {
+    display: none;
+  }
+}
+.Tab {
+  padding: 0.6em 1em;
+  margin: 0 3px 3px 0;
+  text-align: center;
+  background-color: darkcyan;
+  border: solid 3px darkcyan;
+  border-bottom-width: 0;
+  border-radius: 0.5em 0.5em 0 0;
+  font-weight: bold;
+  color: #002525;
+  text-decoration: none;
+  transition: background-color 0.1s;
+  cursor: pointer;
+}
+.Tab:hover,
+.Tab:focus {
+  background-color: #199797;
+  border-color: #199797;
+  outline: none;
+}
+.Tab[aria-selected="false"]:active {
+  margin-top: 0.2em;
+  padding-bottom: 0.4em;
+}
+.Tab[aria-selected="true"] {
+  background: #e6f3f3;
+  cursor: default;
 }
 /* Accordion Styling
 ==================================== */
