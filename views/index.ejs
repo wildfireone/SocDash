@@ -44,7 +44,7 @@
         var roomlink = room['id'];
         console.log(room['timestamp'])
 
-        $('#datatable').append('<button class="Accordion" role="tab" aria-selected="true">' + room['room'] + '</button>')
+        $('#datatable').append('<button class="Accordion" role="tab" aria-selected="false">' + room['room'] + '</button>')
         $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell Rtable-cell--head roomrow"><h3>' + room['room'] + '</h3></div>');
         $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell roomrow ' +room['nowstate']+'">' + room['now']+ '</div>');
         $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell roomrow ' +room['nextstate']+'">'+ room['next']+ '</div>');

@@ -25,7 +25,8 @@
          if( cellCount % setNum === 0 ) colCount++;
        });
      };
-     $(this).each(function(){ toggleColumns($(this)); });
+
+     $(this).attr("aria-selected","true").siblings().attr("aria-selected","false");
 
      $(this).find(".Tab").click( function() {
        $(this).attr("aria-selected","true").siblings().attr("aria-selected","false");
@@ -33,9 +34,12 @@
      });
 
      $(this).find(".Accordion").click( function() {
-       $(this).attr("aria-selected", $(this).attr("aria-selected") !== "true" );
+       $(this).attr("aria-selected","true").siblings().attr("aria-selected","false");
        toggleColumns( $(this).parents(".Rtable") );
      });
+
+     $(this).each(function(){ toggleColumns($(this)); });
+
 
    };
  }(jQuery));
