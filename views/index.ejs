@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <% include head %>
+  <% include head2 %>
 </head>
 
 <body class="container">
@@ -12,65 +12,62 @@
   </header> -->
 
   <main>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      //on first connection log the connection id
+      socket.on('info', function(msg) {
+
+        //$('#messages').append($('<li>').text(msg));
+        console.log(msg);
+      });
+      //on recieving data parse the data and add to the table.
+      socket.on('data', function(msg) {
+        //console.log(data) //uncomment to see the json data in the console.
+        $('#datatable').empty();
+        //$('#messages').append($('<li>').text("data: "+ msg));
+
+        for (var roomIdx in msg.rooms) {
+          var room = msg.rooms[roomIdx];
+          var nowstring = ''
+          var nextstring = ''
+          //if (room['nowstate'] == 'busy') {
+          //  nowstring = '<span class="busy">' +  + '</span>'
+          //} else {
+          //  nowstring = '<span class="free">' + room['now'] + '</span>'
+        //}
+        //if (room['nextstate'] == 'busy') {
+        //  nextstring = '<span class="busy">' + room['next'] + '</span>'
+        //} else {
+        //  nextstring = '<span class="free">' + room['next'] + '</span>'
+        //}
+        var roomlink = room['id'];
+        console.log(room['timestamp'])
+
+        $('#datatable').append('<button class="Accordion" role="tab" aria-selected="true">' + room['room'] + '</button>')
+        $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell Rtable-cell--head roomrow"><h3>' + room['room'] + '</h3></div>');
+        $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell roomrow ' +room['nowstate']+'">' + room['now']+ '</div>');
+        $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell roomrow ' +room['nextstate']+'">'+ room['next']+ '</div>');
+      }
+      $(".js-RtableTabs, .js-RtableAccordions").responsiveTable();
+      $('.roomrow').click(function(event) {
+
+        if (event.target.parentNode.id) {
+          window.open('http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/' + event.target.id + '.pdf', 'Room Timetable')
+        }
+
+      });
+
+      });
+    </script>
+    <h1><span class="blue">&lt;</span>CSDM<span class="blue">&gt;</span> <span class="blue">Now and Next</pan></h1>
 
 
-      <div>
-        <script src="/socket.io/socket.io.js"></script>
-        <script>
-          var socket = io();
-          //on first connection log the connection id
-          socket.on('info', function(msg){
-
-              //$('#messages').append($('<li>').text(msg));
-              console.log(msg);
-          });
-          //on recieving data parse the data and add to the table.
-          socket.on('data', function(msg){
-            //console.log(data) //uncomment to see the json data in the console.
-            $('#datatable').empty();
-              //$('#messages').append($('<li>').text("data: "+ msg));
-
-              for(var roomIdx in msg.rooms){
-                var room = msg.rooms[roomIdx];
-                var nowstring = ''
-                var nextstring = ''
-                if(room['nowstate']=='busy'){nowstring = '<td class="busy">'+room['now']+'</td>'}
-                else{nowstring = '<td class="free">'+room['now']+'</td>'}
-                if(room['nextstate']=='busy'){nextstring = '<td class="busy">'+room['next']+'</td>'}
-                else{nextstring = '<td class="free">'+room['next']+'</td>'}
-                var roomlink = room['id'];
-                console.log(room['timestamp'])
-                $('#datatable').append('<tr class="roomrow" id="'+roomlink+'"> <td>'+room['room']+'</td>'+nowstring+''+nextstring+'</tr>');
-              }
-              $('.roomrow').click(function(event) {
-
-              if(event.target.parentNode.id){
-                window.open('http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/'+event.target.parentNode.id+'.pdf', 'Room Timetable')
-              }
-
-                });
-
-          });
-        </script>
-        <h1><span class="blue">&lt;</span>CSDM<span class="blue">&gt;</span> <span class="blue">Now and Next</pan></h1>
-
-
-<table class="container">
-	<thead>
-		<tr>
-			<th><h1>Room</h1></th>
-			<th><h1>Now</h1></th>
-			<th><h1>Next</h1></th>
-		</tr>
-	</thead>
-	<tbody id="datatable">
-
-	</tbody>
-</table>
-      </div>
+    <div id="datatable" class="Rtable Rtable--3cols Rtable--collapse js-RtableAccordions">
 
 
     </div>
+
   </main>
 
   <footer>

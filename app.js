@@ -3,7 +3,7 @@
  * @Date:   23-Mar-182018
  * @Filename: server.js
  * @Last modified by:   john
- * @Last modified time: 21-Aug-182018
+ * @Last modified time: 22-Aug-182018
  */
 
 // server.js
@@ -27,7 +27,12 @@ app.use(express.static('public'))
 app.get('/', function(req, res) {
 
   var tagline = "Commit messages are memory.";
-   res.render('index');
+  res.render('index');
+});
+app.get('/test', function(req, res) {
+
+  var tagline = "Commit messages are memory.";
+  res.render('indexnew');
 });
 
 app.get('/ping', function(req, res) {
@@ -42,23 +47,23 @@ timetables.getTimetables();
 
 //start the server
 var port = 6000;
-if(args[0]){
+if (args[0]) {
   port = args[0];
 }
 http.listen(port, function() {
-  console.log(port +' is the magic port');
+  console.log(port + ' is the magic port');
   //check for new data every minute.
   setInterval(intervalFunc, 60000);
 });
 
 //socket io incomming. When a new client connects to the system they will get the latest data
 io.on('connection', function(socket) {
-console.log('a user connected');
-socket.emit('info', 'Connected to server...socket:' + socket.id);
-//socket.emit('data', 'initial data');
-getData(function(response) {
-  socket.emit('data', response);
-});
+  console.log('a user connected');
+  socket.emit('info', 'Connected to server...socket:' + socket.id);
+  //socket.emit('data', 'initial data');
+  getData(function(response) {
+    socket.emit('data', response);
+  });
 
 
 });
@@ -71,24 +76,25 @@ function getData(callback) {
   fs.readFile('./timetables/data.json', 'utf8', function(err, data) {
     if (err) throw err;
     obj = JSON.parse(data);
-    var d = new Date();
+    var d = new Date
+    var tzo = d.getTimezoneOffset();
     var n = d.getDay() - 1;
     if (n < 0) {
       n = 6;
     }
-    n=2;
+    n = 2;
     console.log(n)
     //this generats a JSON paylod to be sent to the client. Every room with the now and next items
     for (var x = 0; x < obj.length; x++) {
       var room = {}
       room.room = obj[x].roomName;
-      room.id=obj[x].roomID;
+      room.id = obj[x].roomID;
       room.timestamp = obj[x].timestamp;
 
       var week = obj[x].timetable.week[n];
       var day = week.day;
       var events = week.events;
-      console.log(room.room +":" +events.length);
+      console.log(room.room + ":" + events.length);
       if (events.length == 0) {
         room.now = "Free until close";
         room.next = "Free until close";
@@ -102,10 +108,10 @@ function getData(callback) {
         min = (min < 10 ? "0" : "") + min;
         var minutesinday = parseInt(min) + (hour * 60);
 
-          room.now = "Free";
-          room.next = "Free until close";
-          room.nowstate = 'free';
-          room.nextstate = 'free';
+        room.now = "Free";
+        room.next = "Free until close";
+        room.nowstate = 'free';
+        room.nextstate = 'free';
 
         for (var e = 0; e < events.length; e++) {
 
@@ -135,6 +141,11 @@ function getData(callback) {
               room.nextstate = 'free';
             }
             //return;
+          } else if (minutesinday < startinday) {
+            room.now = "Free until " + events[e].start;
+            room.nowstate = 'free';
+            room.next = events[e].event + " Starts at " + events[e].start + " ends at " + events[e].end
+            room.nextstate = 'busy';
           }
 
         }

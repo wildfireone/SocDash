@@ -3,7 +3,7 @@
  * @Date:   05-Jun-182018
  * @Filename: index.js
  * @Last modified by:   john
- * @Last modified time: 21-Aug-182018
+ * @Last modified time: 22-Aug-182018
  */
 
 
@@ -22,7 +22,7 @@
 //fuction export for module to be called by app.js
 
 var schedule = require('node-schedule');
-
+var timetableurl = "http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/";
 module.exports = {
   getTimetables: function() {
     console.log(Date.now());
@@ -171,7 +171,7 @@ function getCurrentWeek(result,i) {
     }
     daydate = daywholedate.split('\n')[1];
     //adding a week for testing
-    var weekstart = moment().startOf('isoWeek').format('L');
+    var weekstart = moment().startOf('isoWeek').format('L'); //.add(7, 'days');
     if(weekstart == daydate){
       return w;
 
@@ -192,7 +192,7 @@ function getNextFile(fileNo, ts) {
   var i = fileNo
   var file = fs.createWriteStream("./timetables/" + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
   //fire the link to the uni timetable based on the room ID.
-  var request = http.get("http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/" + rooms[i].roomID + ".pdf", function(response) {
+  var request = http.get(timetableurl + rooms[i].roomID + ".pdf", function(response) {
     //console.log(response);
     //pipe file the response to output stream (could probably be parsed in memory more efficiently)
     response.pipe(file);
