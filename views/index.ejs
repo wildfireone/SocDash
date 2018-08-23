@@ -42,7 +42,8 @@
         //  nextstring = '<span class="free">' + room['next'] + '</span>'
         //}
         var roomlink = room['id'];
-        console.log(room['timestamp'])
+        console.log(room['timestamp']+":"+room['timestampupdate'])
+
 
         $('#datatable').append('<button class="Accordion" role="tab" aria-selected="false">' + room['room'] + '</button>')
         $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell Rtable-cell--head roomrow"><h3>' + room['room'] + '</h3></div>');

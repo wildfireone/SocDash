@@ -3,7 +3,7 @@
  * @Date:   23-Mar-182018
  * @Filename: server.js
  * @Last modified by:   john
- * @Last modified time: 22-Aug-182018
+ * @Last modified time: 23-Aug-182018
  */
 
 // server.js
@@ -76,13 +76,14 @@ function getData(callback) {
   fs.readFile('./timetables/data.json', 'utf8', function(err, data) {
     if (err) throw err;
     obj = JSON.parse(data);
-    var d = new Date
+    var d = new Date(Date.now());
+    var datestring = d.toLocaleString()
     var tzo = d.getTimezoneOffset();
     var n = d.getDay() - 1;
     if (n < 0) {
       n = 6;
     }
-    n = 2;
+    //n = 2;
     console.log(n)
     //this generats a JSON paylod to be sent to the client. Every room with the now and next items
     for (var x = 0; x < obj.length; x++) {
@@ -90,6 +91,7 @@ function getData(callback) {
       room.room = obj[x].roomName;
       room.id = obj[x].roomID;
       room.timestamp = obj[x].timestamp;
+      room.timestampupdate = datestring;
 
       var week = obj[x].timetable.week[n];
       var day = week.day;
