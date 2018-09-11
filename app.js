@@ -3,7 +3,7 @@
  * @Date:   23-Mar-182018
  * @Filename: server.js
  * @Last modified by:   john
- * @Last modified time: 23-Aug-182018
+ * @Last modified time: 11-Sep-182018
  */
 
 // server.js
@@ -83,11 +83,12 @@ function getData(callback) {
     if (n < 0) {
       n = 6;
     }
-    //n = 2;
+    //n = 3;
     console.log(n)
     //this generats a JSON paylod to be sent to the client. Every room with the now and next items
     for (var x = 0; x < obj.length; x++) {
       var room = {}
+      console.log(JSON.stringify(obj[x]))
       room.room = obj[x].roomName;
       room.id = obj[x].roomID;
       room.timestamp = obj[x].timestamp;

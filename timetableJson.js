@@ -3,7 +3,7 @@
  * @Date:   05-Jun-182018
  * @Filename: index.js
  * @Last modified by:   john
- * @Last modified time: 22-Aug-182018
+ * @Last modified time: 11-Sep-182018
  */
 
 
@@ -52,7 +52,7 @@ var rooms = [
   {
   room: "n424 - CISCO Lab",
   roomID: "r102889"
-  },
+},
   {
   room: "n523 - Security Lab",
   roomID: "r102823"
@@ -92,10 +92,13 @@ function success(result) {
     "week": []
   };
   var currentWeek = getCurrentWeek(result)
+
   var day = result.pageTables[currentWeek];
+  console.log(currentWeek);
 //the timetable format we use stores day data between columns 11 and 18
-  for (var i = 11; i < 18; i++) {
+  for (var i = 4; i < 11; i++) {
     var daydata = day.tables[i];
+    //console.log(daydata);
     //json object to hold day data
     var dayoutput = {
       "day": getDay(i),
@@ -105,13 +108,20 @@ function success(result) {
 //this is basically a manual parser to get the data needed. Everything is pushed into the output JSON array
     for (var j = 1; j < daydata.length; j++) {
       if (daydata[j] != "") {
-
+        try{
         if (daydata[j].indexOf("\n") < daydata[j].indexOf(",")) {
-          var event = daydata[j].split('\n')[0]
-          var start = daydata[j].split('\n')[1].split(',')[1].split('-')[0];
-          var end = daydata[j].split('\n')[1].split(',')[1].split('-')[1];
+          //console.log(daydata[j])
 
-          //console.log('start: ' + start + ' end: ' + end);
+          var regex = /([01]?[0-9]|2[0-3]):[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]/
+
+          var event = daydata[j].split('\n')[0]
+          var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm,"");
+          var timestring = cleandaydata.match(regex)[0];
+//console.log(timestring);
+          var start = timestring.split('-')[0]//daydata[j].split('\n')[1].split(',')[1].split('-')[0];
+          var end = timestring.split('-')[1]//daydata[j].split('\n')[1].split(',')[1].split('-')[1];
+
+          console.log('start: ' + start + ' end: ' + end);
           start = start.trim();
           end = end.trim();
           dayoutput.events.push({
@@ -121,14 +131,20 @@ function success(result) {
           })
         } else {
           var event = daydata[j].split(',')[0]
-          var start = daydata[j].split('\n')[0].split('-')[0];
-          var end = daydata[j].split('\n')[0].split('-')[1];
+          var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm,"");
+          var timestring = cleandaydata.match(regex)[0];
+          var start = timestring.split('-')[0]//daydata[j].split('\n')[1].split(',')[1].split('-')[0];
+          var end = timestring.split('-')[1]//daydata[j].split('\n')[1].split(',')[1].split('-')[1];
           dayoutput.events.push({
             "event": event,
             "start": start,
             "end": end
           })
         }
+      }catch (err)
+      {
+      console.log(err);
+      }
       } else {
 
       }
@@ -158,26 +174,28 @@ function success(result) {
 
 //gets the current week from the timetable
 function getCurrentWeek(result,i) {
-
+//console.log(result.pageTables[0].tables);
   for (w = 0; w < result.pageTables.length; w++) {
-    //if(result.pageTables){
-
-    var daydata = result.pageTables[w].tables[11];
-    //console.log(daydata);
+    //if(result.pageTables[w].tables){
+//day of the week is stored in column 4 (this may change :( )
+//console.log(daydata);
+//console.log(result.pageTables[w].tables);
+    var daydata = result.pageTables[w].tables[4];
     var daywholedate = daydata[0]
+
     //wednesdays are buggy (have a length greater than 18 so no new line)???
     if (daywholedate.indexOf("\n") < 0) {
       daywholedate = daywholedate.split('y')[0] + 'y' + '\n' + daywholedate.split('y')[1]
     }
     daydate = daywholedate.split('\n')[1];
     //adding a week for testing
-    var weekstart = moment().startOf('isoWeek').format('L'); //.add(7, 'days');
+    var weekstart = moment().startOf('isoWeek').format('L');//.add(1, 'days')
     if(weekstart == daydate){
       return w;
 
     }
-  //}
   }
+  //}
 }
 
 //Error
@@ -240,19 +258,19 @@ function getNextFile(fileNo, ts) {
 //helper functions unused
 function getDay(dayno) {
   switch (dayno) {
-    case 11:
+    case 4:
       return "Monday";
-    case 12:
+    case 5:
       return "Tuesday";
-    case 13:
+    case 6:
       return "Wednesday";
-    case 14:
+    case 7:
       return "Thursday";
-    case 15:
+    case 8:
       return "Friday";
-    case 16:
+    case 9:
       return "Saturday";
-    case 17:
+    case 10:
       return "Sunday";
 
   }

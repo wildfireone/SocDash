@@ -46,7 +46,7 @@
 
 
         $('#datatable').append('<button class="Accordion" role="tab" aria-selected="false">' + room['room'] + '</button>')
-        $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell Rtable-cell--head roomrow"><h3>' + room['room'] + '</h3></div>');
+        $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell Rtable-cell--head roomrow"><h3 id="' + roomlink + '">' + room['room'] + '</h3></div>');
         $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell roomrow ' +room['nowstate']+'">' + room['now']+ '</div>');
         $('#datatable').append('<div id="' + roomlink + '"  class="Rtable-cell roomrow ' +room['nextstate']+'">'+ room['next']+ '</div>');
       }
@@ -54,7 +54,7 @@
       $('.roomrow').click(function(event) {
 
         if (event.target.parentNode.id) {
-          window.open('http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/' + event.target.id + '.pdf', 'Room Timetable')
+          window.open('http://celcat.rgu.ac.uk/RGU_18_19/' + event.target.id + '.pdf', 'Room Timetable')
         }
 
       });
