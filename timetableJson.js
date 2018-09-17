@@ -27,7 +27,7 @@ module.exports = {
   getTimetables: function() {
     console.log(Date.now());
     var timestamp = new Date(Date.now()).toLocaleString();
-    getNextFile(0,timestamp);
+    getNextFile(0, timestamp);
     //get timetables every 24 hours
     schedule.scheduleJob('0 1 * * *', retTimetables);
   }
@@ -35,7 +35,7 @@ module.exports = {
 
 
 //fuction to start incremental timetable parsing
-function retTimetables(){
+function retTimetables() {
   var timestamp = new Date(Date.now()).toLocaleString();
   getNextFile(0, timestamp);
 }
@@ -48,39 +48,40 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment')
 moment.locale('en-gb');
-var rooms = [
+var rooms = [{
+    room: "n424 - CISCO Lab",
+    roomID: "r102889"
+  },
   {
-  room: "n424 - CISCO Lab",
-  roomID: "r102889"
-},
+    room: "n523 - Security Lab",
+    roomID: "r102823"
+  }, {
+    room: "n525 - Project Lab",
+    roomID: "r102824"
+  }, {
+    room: "n526 - Usability Lab",
+    roomID: "r102891"
+  }, {
+    room: "n527 - CAD Lab",
+    roomID: "r102825"
+  },
+  //{
+  //  room: "n528 - PG Lab",
+  //  roomID: "r102826"
+  //},
   {
-  room: "n523 - Security Lab",
-  roomID: "r102823"
-}, {
-  room: "n525 - Project Lab",
-  roomID: "r102824"
-}, {
-  room: "n526 - Usability Lab",
-  roomID: "r102891"
-}, {
-  room: "n527 - CAD Lab",
-  roomID: "r102825"
-}, {
-  room: "n528 - PG Lab",
-  roomID: "r102826"
-}, {
-  room: "n529 - PG Lab",
-  roomID: "r102827"
-}, {
-  room: "n530 - Multimedia Lab",
-  roomID: "r102828"
-}, {
-  room: "n533 - Big Lab",
-  roomID: "r102829"
-}, {
-  room: "Green-Room",
-  roomID: "r59135"
-}
+    room: "n529 - PG Lab",
+    roomID: "r102827"
+  }, {
+    room: "n530 - Multimedia Lab",
+    roomID: "r102828"
+  }, {
+    room: "n533 - Big Lab",
+    roomID: "r102829"
+  }, {
+    room: "Green-Room",
+    roomID: "r59135"
+  }
 ];
 
 var outputdata = [];
@@ -94,59 +95,66 @@ function success(result) {
   var currentWeek = getCurrentWeek(result)
 
   var day = result.pageTables[currentWeek];
-  console.log(currentWeek);
-//the timetable format we use stores day data between columns 11 and 18
+  //console.log(currentWeek);
+  //the timetable format we use stores day data between columns 11 and 18
   for (var i = 4; i < 11; i++) {
-    var daydata = day.tables[i];
-    //console.log(daydata);
-    //json object to hold day data
     var dayoutput = {
       "day": getDay(i),
       "events": []
     };
+    if (day.tables[i]) {
+      var daydata = day.tables[i];
+      //console.log(daydata);
+      //json object to hold day data
 
-//this is basically a manual parser to get the data needed. Everything is pushed into the output JSON array
-    for (var j = 1; j < daydata.length; j++) {
-      if (daydata[j] != "") {
-        try{
-        if (daydata[j].indexOf("\n") < daydata[j].indexOf(",")) {
-          //console.log(daydata[j])
+      var regex = /([01]?[0-9]|2[0-3]):[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]/
+      //this is basically a manual parser to get the data needed. Everything is pushed into the output JSON array
+      //console.log("daydata: " + daydata.length)
+      for (var j = 1; j < daydata.length; j++) {
+        //check the daydata actually exists and is not emppty
+        if (!daydata || daydata[j] != "") {
+          //  try{
+          if (daydata[j].indexOf("\n") < daydata[j].indexOf(",")) {
+            //console.log(daydata[j])
 
-          var regex = /([01]?[0-9]|2[0-3]):[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]/
+            //var regex = /([01]?[0-9]|2[0-3]):[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]/
 
-          var event = daydata[j].split('\n')[0]
-          var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm,"");
-          var timestring = cleandaydata.match(regex)[0];
-//console.log(timestring);
-          var start = timestring.split('-')[0]//daydata[j].split('\n')[1].split(',')[1].split('-')[0];
-          var end = timestring.split('-')[1]//daydata[j].split('\n')[1].split(',')[1].split('-')[1];
+            var event = daydata[j].split('\n')[0]
+            var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm, "");
+            console.log(cleandaydata);
+            var timestring = cleandaydata.match(regex)[0];
+            //console.log(timestring);
+            var start = timestring.split('-')[0] //daydata[j].split('\n')[1].split(',')[1].split('-')[0];
+            var end = timestring.split('-')[1] //daydata[j].split('\n')[1].split(',')[1].split('-')[1];
 
-          console.log('start: ' + start + ' end: ' + end);
-          start = start.trim();
-          end = end.trim();
-          dayoutput.events.push({
-            "event": event,
-            "start": start,
-            "end": end
-          })
+            //console.log('start: ' + start + ' end: ' + end);
+            start = start.trim();
+            end = end.trim();
+            dayoutput.events.push({
+              "event": event,
+              "start": start,
+              "end": end
+            })
+          } else {
+            var event = daydata[j].split(',')[0]
+            var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm, "");
+            console.log(cleandaydata);
+            var timestring = cleandaydata.match(regex)[0];
+            var start = timestring.split('-')[0] //daydata[j].split('\n')[1].split(',')[1].split('-')[0];
+            var end = timestring.split('-')[1] //daydata[j].split('\n')[1].split(',')[1].split('-')[1];
+            dayoutput.events.push({
+              "event": event,
+              "start": start,
+              "end": end
+            })
+          }
+          //}catch (err)
+          //{
+          //console.log(err);
+          //}
         } else {
-          var event = daydata[j].split(',')[0]
-          var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm,"");
-          var timestring = cleandaydata.match(regex)[0];
-          var start = timestring.split('-')[0]//daydata[j].split('\n')[1].split(',')[1].split('-')[0];
-          var end = timestring.split('-')[1]//daydata[j].split('\n')[1].split(',')[1].split('-')[1];
-          dayoutput.events.push({
-            "event": event,
-            "start": start,
-            "end": end
-          })
-        }
-      }catch (err)
-      {
-      console.log(err);
-      }
-      } else {
 
+        }
       }
     }
     output.week.push(dayoutput);
@@ -156,7 +164,9 @@ function success(result) {
   rID = filename.split('_')[0] //split on '_' to get ID and Name
   rN = filename.split('_')[1]
   rN = rN.substring(0, rN.length - 4); //drop extension
+  console.log("outdata: " + outputdata.length)
   for (var i = outputdata.length - 1; i >= 0; i--) {
+
     var obj = outputdata[i];
     if (obj.roomID == rID) {
       obj.timetable = output;
@@ -173,14 +183,17 @@ function success(result) {
 }
 
 //gets the current week from the timetable
-function getCurrentWeek(result,i) {
-//console.log(result.pageTables[0].tables);
+function getCurrentWeek(result, i) {
+  //console.log(result.pageTables[0].tables);
+  console.log("pagetablesdata: " + result.pageTables.length)
   for (w = 0; w < result.pageTables.length; w++) {
     //if(result.pageTables[w].tables){
-//day of the week is stored in column 4 (this may change :( )
-//console.log(daydata);
-//console.log(result.pageTables[w].tables);
-    var daydata = result.pageTables[w].tables[4];
+    //day of the week is stored in column 4 (this may change :( )
+    //console.log(daydata);
+    //console.log(result.pageTables[w].tables);
+    var dayTable = getDayTable(result.pageTables[w].tables);
+    //console.log(dayTable)
+    var daydata = result.pageTables[w].tables[dayTable];
     var daywholedate = daydata[0]
 
     //wednesdays are buggy (have a length greater than 18 so no new line)???
@@ -189,13 +202,22 @@ function getCurrentWeek(result,i) {
     }
     daydate = daywholedate.split('\n')[1];
     //adding a week for testing
-    var weekstart = moment().startOf('isoWeek').format('L');//.add(1, 'days')
-    if(weekstart == daydate){
+    var weekstart = moment().startOf('isoWeek').format('L'); //.add(1, 'days')
+    if (weekstart == daydate) {
       return w;
 
     }
   }
   //}
+}
+//function to check where the first table of daydata. This needs some more work to be really timtable change proof.
+function getDayTable(tables) {
+  //console.log(tables)
+  for (d = 0; d < tables.length; d++) {
+    if (tables[d][0].indexOf('Monday') > -1) {
+      return d;
+    }
+  }
 }
 
 //Error
@@ -206,7 +228,7 @@ function error(err) {
 
 //function to identify the next timetable file to be parsed
 function getNextFile(fileNo, ts) {
-  console.log("timestamp: "+ts)
+  console.log("timestamp: " + ts)
   var i = fileNo
   var file = fs.createWriteStream("./timetables/" + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
   //fire the link to the uni timetable based on the room ID.
@@ -215,7 +237,7 @@ function getNextFile(fileNo, ts) {
     //pipe file the response to output stream (could probably be parsed in memory more efficiently)
     response.pipe(file);
   });
-//when this specific file is finished saving start mining it foe the timetable info.
+  //when this specific file is finished saving start mining it foe the timetable info.
   file.on('close', function() {
     var filepath = this.path;
     console.log('request finished downloading file ' + filepath);
@@ -230,7 +252,7 @@ function getNextFile(fileNo, ts) {
     outputdata.push({
       roomID: rID,
       roomName: rN,
-      timestamp:ts
+      timestamp: ts
     });
     //PDF parsed
     //extract data
@@ -244,7 +266,7 @@ function getNextFile(fileNo, ts) {
     //});
     //when done check if this is the last file, if so stop otherwise keep going
     if (fileNo < rooms.length - 1) {
-      getNextFile(fileNo + 1,ts);
+      getNextFile(fileNo + 1, ts);
     } else {
       //console.log(outputdata);
     }
@@ -272,6 +294,8 @@ function getDay(dayno) {
       return "Saturday";
     case 10:
       return "Sunday";
+    default:
+      return "Error day "+ dayno
 
   }
 }

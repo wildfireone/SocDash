@@ -85,10 +85,12 @@ function getData(callback) {
     }
     //n = 3;
     console.log(n)
+    console.log("getting data")
     //this generats a JSON paylod to be sent to the client. Every room with the now and next items
+      console.log(JSON.stringify(obj.length))
     for (var x = 0; x < obj.length; x++) {
       var room = {}
-      console.log(JSON.stringify(obj[x]))
+
       room.room = obj[x].roomName;
       room.id = obj[x].roomID;
       room.timestamp = obj[x].timestamp;
