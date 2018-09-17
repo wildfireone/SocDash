@@ -27,6 +27,6 @@
     "pdf-table-extractor": "^1.0.3",
     "request-ip": "^2.1.1",
     "socket.io": "^2.1.1",
-    "webpack": "^4.11.1"
+    "webpack": "^4.19.0"
   }
 }
