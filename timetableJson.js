@@ -23,6 +23,7 @@
 
 var schedule = require('node-schedule');
 var timetableurl = "http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/";
+var weekbusy = [];
 module.exports = {
   getTimetables: function() {
     console.log(Date.now());
@@ -49,36 +50,37 @@ const path = require('path');
 const moment = require('moment')
 moment.locale('en-gb');
 var rooms = [{
-    room: "n424 - CISCO Lab",
-    roomID: "r102889"
-  },
-  {
-    room: "n523 - Security Lab",
-    roomID: "r102823"
-  }, {
-    room: "n525 - Project Lab",
-    roomID: "r102824"
-  }, {
-    room: "n526 - Usability Lab",
-    roomID: "r102891"
-  }, {
-    room: "n527 - CAD Lab",
-    roomID: "r102825"
-  },
-  {
-    room: "n528 - PG Lab",
-    roomID: "r102826"
-  },
-  {
-    room: "n529 - PG Lab",
-    roomID: "r102827"
-  }, {
-    room: "n530 - Multimedia Lab",
-    roomID: "r102828"
-  }, {
+        room: "n424 - CISCO Lab",
+        roomID: "r102889"
+      },
+      {
+        room: "n523 - Security Lab",
+        roomID: "r102823"
+      }, {
+        room: "n525 - Project Lab",
+        roomID: "r102824"
+      }, {
+        room: "n526 - Usability Lab",
+        roomID: "r102891"
+      }, {
+        room: "n527 - CAD Lab",
+        roomID: "r102825"
+      },
+      {
+        room: "n528 - PG Lab",
+        roomID: "r102826"
+      },
+      {
+        room: "n529 - PG Lab",
+        roomID: "r102827"
+      }, {
+        room: "n530 - Multimedia Lab",
+        roomID: "r102828"
+      },{
     room: "n533 - Big Lab",
     roomID: "r102829"
-  }, {
+  }
+  , {
     room: "Green-Room",
     roomID: "r59135"
   }
@@ -92,18 +94,21 @@ function success(result) {
   var output = {
     "week": []
   };
-  var currentWeek = getCurrentWeek(result)
+  //var currentWeek = getCurrentWeek(result)
+  //getDayTables(result);
 
-  var day = result.pageTables[currentWeek];
+  //var day = result.pageTables[currentWeek];
+  //console.log(day);
+  var currentWeekTables = getDayTables(result);
   //console.log(currentWeek);
   //the timetable format we use stores day data between columns 11 and 18
-  for (var i = 4; i < 11; i++) {
+  for (var i = 0; i < 7; i++) {
     var dayoutput = {
       "day": getDay(i),
       "events": []
     };
-    if (day.tables[i]) {
-      var daydata = day.tables[i];
+    if (currentWeekTables[i]) {
+      var daydata = currentWeekTables[i];
       //console.log(daydata);
       //json object to hold day data
 
@@ -126,16 +131,15 @@ function success(result) {
             var timestring = cleandaydata.match(regex)[0];
 
             var module = ""
-            try{
-            module = cleandaydata.match(moduleregex)[0];
-            console.log(module);
-            }
-            catch(err) {
+            try {
+              module = cleandaydata.match(moduleregex)[0];
+              //console.log(module);
+            } catch (err) {
               console.log(cleandaydata)
               console.log("no module code for event")
             }
-            if(module!=""){
-              event = module + " :"+event;
+            if (module != "") {
+              event = module + " :" + event;
             }
             //console.log(timestring);
             var start = timestring.split('-')[0] //daydata[j].split('\n')[1].split(',')[1].split('-')[0];
@@ -145,7 +149,7 @@ function success(result) {
             start = start.trim();
             end = end.trim();
             dayoutput.events.push({
-              "module":module,
+              "module": module,
               "event": event,
               "start": start,
               "end": end
@@ -154,21 +158,20 @@ function success(result) {
             var event = daydata[j].split(',')[0]
             var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm, "");
             var timestring = cleandaydata.match(regex)[0];
-            try{
-            module = cleandaydata.match(moduleregex)[0];
-            console.log(module)
-            }
-            catch(err) {
+            try {
+              module = cleandaydata.match(moduleregex)[0];
+              //console.log(module)
+            } catch (err) {
               console.log(cleandaydata)
               console.log("no module code for event")
             }
-            if(module!=""){
-              event = module + " :"+event;
+            if (module != "") {
+              event = module + " :" + event;
             }
             var start = timestring.split('-')[0] //daydata[j].split('\n')[1].split(',')[1].split('-')[0];
             var end = timestring.split('-')[1] //daydata[j].split('\n')[1].split(',')[1].split('-')[1];
             dayoutput.events.push({
-              "module":module,
+              "module": module,
               "event": event,
               "start": start,
               "end": end
@@ -191,7 +194,7 @@ function success(result) {
   rID = filename.split('_')[0] //split on '_' to get ID and Name
   rN = filename.split('_')[1]
   rN = rN.substring(0, rN.length - 4); //drop extension
-  console.log("outdata: " + outputdata.length)
+  //console.log("outdata: " + outputdata.length)
   for (var i = outputdata.length - 1; i >= 0; i--) {
 
     var obj = outputdata[i];
@@ -203,10 +206,120 @@ function success(result) {
     fs.writeFile('./timetables/data.json', JSON.stringify(outputdata), 'utf8', function() {
       console.log("saved");
     });
-
+    generateBusyData();
   }
 
 
+}
+
+function generateBusyData() {
+  var roombusy = []
+  for (r = 0; r < outputdata.length; r++) {
+    var weekbusy = [];
+    var roomFileName = outputdata[r]['roomName'].split(' ')[0];
+    fs.writeFile('./public/' + roomFileName + '.tsv', "", 'utf8', function() {
+      console.log("deleted");
+    });
+    var logger = fs.createWriteStream('./public/' + roomFileName + '.tsv', {
+      flags: 'a' // 'a' means appending (old data will be preserved)
+    })
+    logger.write('day\thour\tvalue\n')
+
+    for (d = 0; d < outputdata[r]['timetable']['week'].length; d++) {
+      var day = parseInt(d) + 1;
+      //console.log(outputdata[r]['timetable']['week'].length)
+      var timebusy = new Array(9);
+      for (idx = 0; idx < timebusy.length; idx++) {
+        timebusy[idx] = 0;
+      }
+      for (e = 0; e < outputdata[r]['timetable']['week'][d]['events'].length; e++) {
+
+        var momentstart = moment(outputdata[r]['timetable']['week'][d]['events'][e].start, 'HH:mm').subtract(1, "minutes")
+        var momentend = moment(outputdata[r]['timetable']['week'][d]['events'][e].end, 'HH:mm')
+        //console.log("s"+momentstart)
+        //console.log("s"+outputdata[r]['timetable']['week'][d]['events'][e].start)
+        if (moment("9:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[0] = 1
+
+        }
+        if (moment("10:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[1] = 1
+        }
+        if (moment("11:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[2] = 1
+        }
+        if (moment("12:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[3] = 1
+        }
+        if (moment("13:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[4] = 1
+        }
+        if (moment("14:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[5] = 1
+        }
+        if (moment("15:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[6] = 1
+        }
+        if (moment("16:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[7] = 1
+        }
+        if (moment("17:00", "HH:mm").isBetween(momentstart, momentend)) {
+          timebusy[8] = 1
+        }
+
+
+
+      }
+      for (tb = 0; tb < timebusy.length; tb++) {
+        logger.write(day + '\t' + (parseInt(tb) + 1) + '\t' + timebusy[tb] + '\n')
+      }
+      weekbusy.push(timebusy);
+    }
+    logger.end();
+    roombusy.push(weekbusy);
+  }
+
+
+  fs.writeFile('./timetables/roombusy.json', JSON.stringify(roombusy), 'utf8', function() {
+    console.log("saved");
+  });
+
+  var cumulativeBusy = new Array(roombusy[0].length);
+  for (c = 0; c < cumulativeBusy.length; c++) {
+    cumulativeBusy[c] = new Array(9);
+  }
+
+  for (r = 0; r < roombusy.length; r++) {
+    for (d = 0; d < roombusy[r].length; d++) {
+      for (h = 0; h < roombusy[r][d].length; h++) {
+        if (cumulativeBusy[d][h]) {
+          cumulativeBusy[d][h] = parseInt(cumulativeBusy[d][h]) + parseInt(roombusy[r][d][h]);
+        } else {
+          cumulativeBusy[d][h] = parseInt(roombusy[r][d][h]);
+        }
+      }
+    }
+  }
+  //var logger = fs.createWriteStream(roomFileName+'.txt', {
+  //    flags: 'a' // 'a' means appending (old data will be preserved)
+  //  })
+  //  logger.write('day\thour\tvalue')
+  fs.writeFile('./public/combined.tsv', "", 'utf8', function() {
+    console.log("deleted");
+  });
+  var logger = fs.createWriteStream('./public/combined.tsv', {
+    flags: 'a' // 'a' means appending (old data will be preserved)
+  })
+  logger.write('day\thour\tvalue\n')
+  for (d = 0; d < cumulativeBusy.length; d++) {
+    for (h = 0; h < cumulativeBusy[0].length; h++) {
+      logger.write((parseInt(d) + 1) + '\t' + (parseInt(h) + 1) + '\t' + cumulativeBusy[d][h] + '\n')
+    }
+  }
+
+  fs.writeFile('./timetables/cumulative.json', JSON.stringify(cumulativeBusy), 'utf8', function() {
+    console.log("saved");
+  });
 }
 
 //gets the current week from the timetable
@@ -244,6 +357,67 @@ function getDayTable(tables) {
     if (tables[d][0].indexOf('Monday') > -1) {
       return d;
     }
+  }
+}
+
+function getDayTableforDay(tables, day) {
+  //console.log(tables)
+  for (d = 0; d < tables.length; d++) {
+    if (tables[d][0].indexOf(day) > -1) {
+      return d;
+    }
+  }
+  return -1;
+}
+
+function getDayTables(result) {
+
+  var currentWeekTables = [];
+  for (w = 0; w < result.pageTables.length; w++) {
+    //if(result.pageTables[w].tables){
+    //day of the week is stored in column 4 (this may change :( )
+    //console.log(daydata);
+    //console.log(result.pageTables[w].tables);
+    var dayTable = getDayTable(result.pageTables[w].tables);
+    //console.log(dayTable)
+    var daydata = result.pageTables[w].tables[dayTable];
+    var daywholedate = daydata[0]
+
+    //wednesdays are buggy (have a length greater than 18 so no new line)???
+    if (daywholedate.indexOf("\n") < 0) {
+      daywholedate = daywholedate.split('y')[0] + 'y' + '\n' + daywholedate.split('y')[1]
+    }
+    daydate = daywholedate.split('\n')[1];
+    //adding a week for testing
+    var weekstart = moment().startOf('isoWeek').format('L'); //.add(1, 'days')
+    if (weekstart == daydate) {
+      var monday = findDay(w, result.pageTables, 'Monday');
+      currentWeekTables.push(monday);
+      var tuesday = findDay(w, result.pageTables, 'Tuesday');
+      currentWeekTables.push(tuesday );
+      var wednesday = findDay(w, result.pageTables, 'Wednesday');
+      currentWeekTables.push(wednesday);
+      var thursday = findDay(w, result.pageTables, 'Thursday');
+      currentWeekTables.push(thursday);
+      var friday = findDay(w, result.pageTables, 'Friday');
+      currentWeekTables.push(friday);
+      var saturday = findDay(w, result.pageTables, 'Saturday');
+      currentWeekTables.push(saturday);
+      var sunday = findDay(w, result.pageTables, 'Sunday');
+      currentWeekTables.push(sunday);
+      return currentWeekTables;
+    }
+
+  }
+}
+
+function findDay(page, pagetables, day) {
+  var row = getDayTableforDay(pagetables[w].tables, day);
+  if (row > 0) {
+    return pagetables[w].tables[row]
+  } else {
+    row = getDayTableforDay(pagetables[w + 1].tables, day);
+    return pagetables[w + 1].tables[row]
   }
 }
 
@@ -307,22 +481,22 @@ function getNextFile(fileNo, ts) {
 //helper functions unused
 function getDay(dayno) {
   switch (dayno) {
-    case 4:
+    case 0:
       return "Monday";
-    case 5:
+    case 1:
       return "Tuesday";
-    case 6:
+    case 2:
       return "Wednesday";
-    case 7:
+    case 3:
       return "Thursday";
-    case 8:
+    case 4:
       return "Friday";
-    case 9:
+    case 5:
       return "Saturday";
-    case 10:
+    case 6:
       return "Sunday";
     default:
-      return "Error day "+ dayno
+      return "Error day " + dayno
 
   }
 }

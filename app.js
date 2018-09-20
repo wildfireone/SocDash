@@ -21,6 +21,7 @@ moment().format();
 var args = process.argv.slice(2);
 
 
+
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
@@ -34,6 +35,12 @@ app.get('/test', function(req, res) {
 
   var tagline = "Commit messages are memory.";
   res.render('indexnew');
+});
+
+app.get('/graph', function(req, res) {
+
+  var tagline = "Commit messages are memory.";
+  res.render('graph');
 });
 
 app.get('/ping', function(req, res) {
@@ -121,14 +128,14 @@ function getData(callback) {
 
         for (var e = 0; e < events.length; e++) {
 
-          var starthours = parseInt(events[e].start.split(':')[0]);
-          var startmins = parseInt(events[e].start.split(':')[1]);
-          //console.log(starthours + ' ' + startmins)
-          var endhours = parseInt(events[e].end.split(':')[0]);
-          var endmins = parseInt(events[e].end.split(':')[1]);
-          //console.log(endhours + ' ' + endmins)
-          var startinday = startmins + (starthours * 60);
-          var endinday = endmins + (endhours * 60);
+          // var starthours = parseInt(events[e].start.split(':')[0]);
+          // var startmins = parseInt(events[e].start.split(':')[1]);
+          // //console.log(starthours + ' ' + startmins)
+          // var endhours = parseInt(events[e].end.split(':')[0]);
+          // var endmins = parseInt(events[e].end.split(':')[1]);
+          // //console.log(endhours + ' ' + endmins)
+          // var startinday = startmins + (starthours * 60);
+          // var endinday = endmins + (endhours * 60);
 
           var startmoment  = moment(events[e].start, 'HH:mm');
           var endmoment  = moment(events[e].end, 'HH:mm');
@@ -152,7 +159,7 @@ function getData(callback) {
               room.nextstate = 'free';
             }
             //return;
-          } else if (minutesinday < startinday) {
+          } else if (nowmoment.isBefore(startmoment)) {
             room.now = "Free until " + events[e].start;
             room.nowstate = 'free';
             room.next = events[e].event + " Starts at " + events[e].start + " ends at " + events[e].end
