@@ -65,10 +65,10 @@ var rooms = [{
     room: "n527 - CAD Lab",
     roomID: "r102825"
   },
-  //{
-  //  room: "n528 - PG Lab",
-  //  roomID: "r102826"
-  //},
+  {
+    room: "n528 - PG Lab",
+    roomID: "r102826"
+  },
   {
     room: "n529 - PG Lab",
     roomID: "r102827"
@@ -108,6 +108,7 @@ function success(result) {
       //json object to hold day data
 
       var regex = /([01]?[0-9]|2[0-3]):[0-5][0-9]-([01]?[0-9]|2[0-3]):[0-5][0-9]/
+      var moduleregex = /\C\M\d{4}|\C\M\M\d{3}/
       //this is basically a manual parser to get the data needed. Everything is pushed into the output JSON array
       //console.log("daydata: " + daydata.length)
       for (var j = 1; j < daydata.length; j++) {
@@ -121,8 +122,21 @@ function success(result) {
 
             var event = daydata[j].split('\n')[0]
             var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm, "");
-            console.log(cleandaydata);
+            //console.log(cleandaydata);
             var timestring = cleandaydata.match(regex)[0];
+
+            var module = ""
+            try{
+            module = cleandaydata.match(moduleregex)[0];
+            console.log(module);
+            }
+            catch(err) {
+              console.log(cleandaydata)
+              console.log("no module code for event")
+            }
+            if(module!=""){
+              event = module + " :"+event;
+            }
             //console.log(timestring);
             var start = timestring.split('-')[0] //daydata[j].split('\n')[1].split(',')[1].split('-')[0];
             var end = timestring.split('-')[1] //daydata[j].split('\n')[1].split(',')[1].split('-')[1];
@@ -131,6 +145,7 @@ function success(result) {
             start = start.trim();
             end = end.trim();
             dayoutput.events.push({
+              "module":module,
               "event": event,
               "start": start,
               "end": end
@@ -138,11 +153,22 @@ function success(result) {
           } else {
             var event = daydata[j].split(',')[0]
             var cleandaydata = daydata[j].replace(/(\r\n\t|\n|\r\t)/gm, "");
-            console.log(cleandaydata);
             var timestring = cleandaydata.match(regex)[0];
+            try{
+            module = cleandaydata.match(moduleregex)[0];
+            console.log(module)
+            }
+            catch(err) {
+              console.log(cleandaydata)
+              console.log("no module code for event")
+            }
+            if(module!=""){
+              event = module + " :"+event;
+            }
             var start = timestring.split('-')[0] //daydata[j].split('\n')[1].split(',')[1].split('-')[0];
             var end = timestring.split('-')[1] //daydata[j].split('\n')[1].split(',')[1].split('-')[1];
             dayoutput.events.push({
+              "module":module,
               "event": event,
               "start": start,
               "end": end
@@ -157,6 +183,7 @@ function success(result) {
         }
       }
     }
+
     output.week.push(dayoutput);
   }
   //get current file name (i.e the files that has just closed)
