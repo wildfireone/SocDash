@@ -16,7 +16,8 @@ var timetables = require('./timetableJson');
 var flipit = require('./flipreverseip');
 const requestIp = require('request-ip');
 const fs = require('fs');
-
+var moment = require('moment');
+moment().format();
 var args = process.argv.slice(2);
 
 
@@ -128,8 +129,13 @@ function getData(callback) {
           //console.log(endhours + ' ' + endmins)
           var startinday = startmins + (starthours * 60);
           var endinday = endmins + (endhours * 60);
+
+          var startmoment  = moment(events[e].start, 'HH:mm');
+          var endmoment  = moment(events[e].end, 'HH:mm');
+          var nowmoment = moment();
+
           //console.log(startinday + ' ' + minutesinday + ' ' +endinday)
-          if (minutesinday > startinday && minutesinday < endinday) {
+          if (nowmoment.isBetween(startmoment,endmoment)) {
 
             room.now = events[e].event + " Started at " + events[e].start + " ends at " + events[e].end
             room.nowstate = 'busy';
