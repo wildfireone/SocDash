@@ -107,6 +107,8 @@ function getData(callback) {
       var week = obj[x].timetable.week[n];
       var day = week.day;
       var events = week.events;
+      var nowmoment = moment().tz("Europe/London");
+      console.log(nowmoment);
       console.log(room.room + ":" + events.length);
       if (events.length == 0) {
         room.now = "Free until close";
@@ -126,6 +128,7 @@ function getData(callback) {
         room.nowstate = 'free';
         room.nextstate = 'free';
 
+
         for (var e = events.length-1; e >= 0; e--) {
 
           // var starthours = parseInt(events[e].start.split(':')[0]);
@@ -139,7 +142,7 @@ function getData(callback) {
 
           var startmoment  = moment(events[e].start, 'HH:mm').subtract(1,'minutes');
           var endmoment  = moment(events[e].end, 'HH:mm');
-          var nowmoment = moment().tz("Europe/London");
+
 
           //console.log(startinday + ' ' + minutesinday + ' ' +endinday)
           if (nowmoment.isBetween(startmoment,endmoment)) {
