@@ -107,7 +107,7 @@ function getData(callback) {
       var week = obj[x].timetable.week[n];
       var day = week.day;
       var events = week.events;
-      var nowmoment = moment().tz("Europe/London");
+      var nowmoment = moment().tz("Europe/London").add(1,"hours");
       console.log(nowmoment);
       console.log(room.room + ":" + events.length);
       if (events.length == 0) {
