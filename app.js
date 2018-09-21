@@ -126,7 +126,7 @@ function getData(callback) {
         room.nowstate = 'free';
         room.nextstate = 'free';
 
-        for (var e = 0; e < events.length; e++) {
+        for (var e = events.length-1; e >= 0; e--) {
 
           // var starthours = parseInt(events[e].start.split(':')[0]);
           // var startmins = parseInt(events[e].start.split(':')[1]);
@@ -137,7 +137,7 @@ function getData(callback) {
           // var startinday = startmins + (starthours * 60);
           // var endinday = endmins + (endhours * 60);
 
-          var startmoment  = moment(events[e].start, 'HH:mm');
+          var startmoment  = moment(events[e].start, 'HH:mm').subtract(1,'minutes');
           var endmoment  = moment(events[e].end, 'HH:mm');
           var nowmoment = moment();
 
