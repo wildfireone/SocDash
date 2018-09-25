@@ -49,38 +49,39 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment')
 moment.locale('en-gb');
-var rooms = [{
-        room: "n424 - CISCO Lab",
-        roomID: "r102889"
-      },
-      {
-        room: "n523 - Security Lab",
-        roomID: "r102823"
-      }, {
-        room: "n525 - Project Lab",
-        roomID: "r102824"
-      }, {
-        room: "n526 - Usability Lab",
-        roomID: "r102891"
-      }, {
-        room: "n527 - CAD Lab",
-        roomID: "r102825"
-      },
-      {
-        room: "n528 - PG Lab",
-        roomID: "r102826"
-      },
-      {
-        room: "n529 - PG Lab",
-        roomID: "r102827"
-      }, {
-        room: "n530 - Multimedia Lab",
-        roomID: "r102828"
-      },{
-    room: "n533 - Big Lab",
-    roomID: "r102829"
+var rooms = [
+  {
+    room: "n424 - CISCO Lab",
+    roomID: "r102889"
+  },
+  {
+    room: "n523 - Security Lab",
+    roomID: "r102823"
   }
   , {
+    room: "n525 - Project Lab",
+    roomID: "r102824"
+  }, {
+    room: "n526 - Usability Lab",
+    roomID: "r102891"
+  }, {
+    room: "n527 - CAD Lab",
+    roomID: "r102825"
+  },
+  {
+    room: "n528 - PG Lab",
+    roomID: "r102826"
+  },
+  {
+    room: "n529 - PG Lab",
+    roomID: "r102827"
+  }, {
+    room: "n530 - Multimedia Lab",
+    roomID: "r102828"
+  }, {
+    room: "n533 - Big Lab",
+    roomID: "r102829"
+  }, {
     room: "Green-Room",
     roomID: "r59135"
   }
@@ -354,8 +355,11 @@ function getCurrentWeek(result, i) {
 function getDayTable(tables) {
   //console.log(tables)
   for (d = 0; d < tables.length; d++) {
-    if (tables[d][0].indexOf('Monday') > -1) {
-      return d;
+    if (tables[d]) {
+      //console.log(tables[d]);
+      if (tables[d][0].indexOf('Monday') > -1) {
+        return d;
+      }
     }
   }
 }
@@ -378,36 +382,41 @@ function getDayTables(result) {
     //day of the week is stored in column 4 (this may change :( )
     //console.log(daydata);
     //console.log(result.pageTables[w].tables);
+
     var dayTable = getDayTable(result.pageTables[w].tables);
-    //console.log(dayTable)
-    var daydata = result.pageTables[w].tables[dayTable];
-    var daywholedate = daydata[0]
+    if (dayTable) {
+      //console.log(dayTable)
+      var daydata = result.pageTables[w].tables[dayTable];
+      if (daydata) {
+        var daywholedate = daydata[0]
 
-    //wednesdays are buggy (have a length greater than 18 so no new line)???
-    if (daywholedate.indexOf("\n") < 0) {
-      daywholedate = daywholedate.split('y')[0] + 'y' + '\n' + daywholedate.split('y')[1]
-    }
-    daydate = daywholedate.split('\n')[1];
-    //adding a week for testing
-    var weekstart = moment().startOf('isoWeek').format('L'); //.add(1, 'days')
-    if (weekstart == daydate) {
-      var monday = findDay(w, result.pageTables, 'Monday');
-      currentWeekTables.push(monday);
-      var tuesday = findDay(w, result.pageTables, 'Tuesday');
-      currentWeekTables.push(tuesday );
-      var wednesday = findDay(w, result.pageTables, 'Wednesday');
-      currentWeekTables.push(wednesday);
-      var thursday = findDay(w, result.pageTables, 'Thursday');
-      currentWeekTables.push(thursday);
-      var friday = findDay(w, result.pageTables, 'Friday');
-      currentWeekTables.push(friday);
-      var saturday = findDay(w, result.pageTables, 'Saturday');
-      currentWeekTables.push(saturday);
-      var sunday = findDay(w, result.pageTables, 'Sunday');
-      currentWeekTables.push(sunday);
-      return currentWeekTables;
-    }
+        //wednesdays are buggy (have a length greater than 18 so no new line)???
+        if (daywholedate.indexOf("\n") < 0) {
+          daywholedate = daywholedate.split('y')[0] + 'y' + '\n' + daywholedate.split('y')[1]
+        }
+        daydate = daywholedate.split('\n')[1];
+        //adding a week for testing
+        var weekstart = moment().startOf('isoWeek').format('L'); //.add(1, 'days')
+        if (weekstart == daydate) {
+          var monday = findDay(w, result.pageTables, 'Monday');
+          currentWeekTables.push(monday);
+          var tuesday = findDay(w, result.pageTables, 'Tuesday');
+          currentWeekTables.push(tuesday);
+          var wednesday = findDay(w, result.pageTables, 'Wednesday');
+          currentWeekTables.push(wednesday);
+          var thursday = findDay(w, result.pageTables, 'Thursday');
+          currentWeekTables.push(thursday);
+          var friday = findDay(w, result.pageTables, 'Friday');
+          currentWeekTables.push(friday);
+          var saturday = findDay(w, result.pageTables, 'Saturday');
+          currentWeekTables.push(saturday);
+          var sunday = findDay(w, result.pageTables, 'Sunday');
+          currentWeekTables.push(sunday);
+          return currentWeekTables;
+        }
 
+      }
+    }
   }
 }
 
