@@ -78,10 +78,12 @@ var rooms = [
   }, {
     room: "n530 - Multimedia Lab",
     roomID: "r102828"
-  }, {
+  },
+  {
     room: "n533 - Big Lab",
     roomID: "r102829"
-  }, {
+   }
+   , {
     room: "Green-Room",
     roomID: "r59135"
   }
@@ -98,7 +100,7 @@ function success(result) {
   //var currentWeek = getCurrentWeek(result)
   //getDayTables(result);
 
-  //var day = result.pageTables[currentWeek];
+  //var day = result.pageTables[1];
   //console.log(day);
   var currentWeekTables = getDayTables(result);
   //console.log(currentWeek);
@@ -187,7 +189,7 @@ function success(result) {
         }
       }
     }
-
+console.log(dayoutput);
     output.week.push(dayoutput);
   }
   //get current file name (i.e the files that has just closed)
@@ -384,7 +386,9 @@ function getDayTables(result) {
     //console.log(result.pageTables[w].tables);
 
     var dayTable = getDayTable(result.pageTables[w].tables);
+
     if (dayTable) {
+      console.log(result.pageTables[w]);
       //console.log(dayTable)
       var daydata = result.pageTables[w].tables[dayTable];
       if (daydata) {
@@ -423,6 +427,7 @@ function getDayTables(result) {
 function findDay(page, pagetables, day) {
   var row = getDayTableforDay(pagetables[w].tables, day);
   if (row > 0) {
+    //console.log(pagetables[w].tables);
     return pagetables[w].tables[row]
   } else {
     row = getDayTableforDay(pagetables[w + 1].tables, day);
