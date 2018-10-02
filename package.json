@@ -1,8 +1,8 @@
 {
   "name": "socdash",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "room use display for CSDM",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/wildfireone/SocDash.git"
   },
-  "author": "",
+  "author": "Wildfireone",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/wildfireone/SocDash/issues"
@@ -30,5 +30,10 @@
     "request-ip": "^2.1.1",
     "socket.io": "^2.1.1",
     "webpack": "^4.19.0"
-  }
+  },
+  "devDependencies": {},
+  "keywords": [
+    "room",
+    "capacity"
+  ]
 }

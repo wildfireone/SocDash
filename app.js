@@ -54,7 +54,7 @@ app.get('/ping', function(req, res) {
 timetables.getTimetables();
 
 //start the server
-var port = 6000;
+var port = 80;
 if (args[0]) {
   port = args[0];
 }
