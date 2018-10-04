@@ -206,7 +206,7 @@ console.log(dayoutput);
     }
   }
   if (outputdata.length == rooms.length) {
-    fs.writeFile('./timetables/data.json', JSON.stringify(outputdata), 'utf8', function() {
+    fs.writeFile(process.env.OPENSHIFT_DATA_DIR + 'data.json', JSON.stringify(outputdata), 'utf8', function() {
       console.log("saved");
     });
     generateBusyData();
@@ -220,10 +220,10 @@ function generateBusyData() {
   for (r = 0; r < outputdata.length; r++) {
     var weekbusy = [];
     var roomFileName = outputdata[r]['roomName'].split(' ')[0];
-    fs.writeFile('./public/' + roomFileName + '.tsv', "", 'utf8', function() {
+    fs.writeFile(process.env.OPENSHIFT_DATA_DIR + + roomFileName + '.tsv', "", 'utf8', function() {
       console.log("deleted");
     });
-    var logger = fs.createWriteStream('./public/' + roomFileName + '.tsv', {
+    var logger = fs.createWriteStream(process.env.OPENSHIFT_DATA_DIR + + roomFileName + '.tsv', {
       flags: 'a' // 'a' means appending (old data will be preserved)
     })
     logger.write('day\thour\tvalue\n')
@@ -283,7 +283,7 @@ function generateBusyData() {
   }
 
 
-  fs.writeFile('./timetables/roombusy.json', JSON.stringify(roombusy), 'utf8', function() {
+  fs.writeFile(process.env.OPENSHIFT_DATA_DIR +'roombusy.json', JSON.stringify(roombusy), 'utf8', function() {
     console.log("saved");
   });
 
@@ -307,10 +307,10 @@ function generateBusyData() {
   //    flags: 'a' // 'a' means appending (old data will be preserved)
   //  })
   //  logger.write('day\thour\tvalue')
-  fs.writeFile('./public/combined.tsv', "", 'utf8', function() {
+  fs.writeFile(process.env.OPENSHIFT_DATA_DIR +'combined.tsv', "", 'utf8', function() {
     console.log("deleted");
   });
-  var logger = fs.createWriteStream('./public/combined.tsv', {
+  var logger = fs.createWriteStream(process.env.OPENSHIFT_DATA_DIR +'combined.tsv', {
     flags: 'a' // 'a' means appending (old data will be preserved)
   })
   logger.write('day\thour\tvalue\n')
@@ -320,7 +320,7 @@ function generateBusyData() {
     }
   }
 
-  fs.writeFile('./timetables/cumulative.json', JSON.stringify(cumulativeBusy), 'utf8', function() {
+  fs.writeFile(process.env.OPENSHIFT_DATA_DIR +'cumulative.json', JSON.stringify(cumulativeBusy), 'utf8', function() {
     console.log("saved");
   });
 }
@@ -445,7 +445,7 @@ function error(err) {
 function getNextFile(fileNo, ts) {
   console.log("timestamp: " + ts)
   var i = fileNo
-  var file = fs.createWriteStream("./timetables/" + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
+  var file = fs.createWriteStream(process.env.OPENSHIFT_DATA_DIR  + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
   //fire the link to the uni timetable based on the room ID.
   var request = http.get(timetableurl + rooms[i].roomID + ".pdf", function(response) {
     //console.log(response);
