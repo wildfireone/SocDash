@@ -447,8 +447,8 @@ function error(err) {
 function getNextFile(fileNo, ts) {
   console.log("timestamp: " + ts)
   var i = fileNo
-  console.log(storagelocation);
-  var file = fs.createWriteStream("./timetables/" + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
+  //console.log(storagelocation);
+  var file = fs.createWriteStream(storagelocation + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
   //fire the link to the uni timetable based on the room ID.
   var request = http.get(timetableurl + rooms[i].roomID + ".pdf", function(response) {
     //console.log(response);
