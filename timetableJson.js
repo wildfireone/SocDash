@@ -330,7 +330,7 @@ function generateBusyData() {
 //gets the current week from the timetable
 function getCurrentWeek(result, i) {
   //console.log(result.pageTables[0].tables);
-  console.log("pagetablesdata: " + result.pageTables.length)
+  //console.log("pagetablesdata: " + result.pageTables.length)
   for (w = 0; w < result.pageTables.length; w++) {
     //if(result.pageTables[w].tables){
     //day of the week is stored in column 4 (this may change :( )
@@ -390,7 +390,7 @@ function getDayTables(result) {
     var dayTable = getDayTable(result.pageTables[w].tables);
 
     if (dayTable) {
-      console.log(result.pageTables[w]);
+      //console.log(result.pageTables[w]);
       //console.log(dayTable)
       var daydata = result.pageTables[w].tables[dayTable];
       if (daydata) {
