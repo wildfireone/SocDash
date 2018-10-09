@@ -3,7 +3,7 @@
  * @Date:   05-Jun-182018
  * @Filename: index.js
  * @Last modified by:   john
- * @Last modified time: 11-Sep-182018
+ * @Last modified time: 09-Oct-182018
  */
 
 
@@ -20,6 +20,8 @@
 //
 //     pdfParser.loadPDF("test/r102829.pdf");
 //fuction export for module to be called by app.js
+
+var storagelocation = process.env.OPENSHIFT_DATA_DIR;
 
 var schedule = require('node-schedule');
 var timetableurl = "http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/";
@@ -445,6 +447,7 @@ function error(err) {
 function getNextFile(fileNo, ts) {
   console.log("timestamp: " + ts)
   var i = fileNo
+  console.log(storagelocation);
   var file = fs.createWriteStream("./timetables/" + rooms[i].roomID + '_' + rooms[i].room + ".pdf");
   //fire the link to the uni timetable based on the room ID.
   var request = http.get(timetableurl + rooms[i].roomID + ".pdf", function(response) {
