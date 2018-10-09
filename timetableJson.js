@@ -21,7 +21,7 @@
 //     pdfParser.loadPDF("test/r102829.pdf");
 //fuction export for module to be called by app.js
 
-var storagelocation = process.env.OPENSHIFT_DATA_DIR;
+var storagelocation = "/data/";
 
 var schedule = require('node-schedule');
 var timetableurl = "http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/";
@@ -208,7 +208,7 @@ console.log(dayoutput);
     }
   }
   if (outputdata.length == rooms.length) {
-    fs.writeFile('./timetables/data.json', JSON.stringify(outputdata), 'utf8', function() {
+    fs.writeFile(storagelocation+'timetables/data.json', JSON.stringify(outputdata), 'utf8', function() {
       console.log("saved");
     });
     generateBusyData();
@@ -285,7 +285,7 @@ function generateBusyData() {
   }
 
 
-  fs.writeFile('./timetables/roombusy.json', JSON.stringify(roombusy), 'utf8', function() {
+  fs.writeFile(storagelocation+'timetables/roombusy.json', JSON.stringify(roombusy), 'utf8', function() {
     console.log("saved");
   });
 
@@ -322,7 +322,7 @@ function generateBusyData() {
     }
   }
 
-  fs.writeFile('./timetables/cumulative.json', JSON.stringify(cumulativeBusy), 'utf8', function() {
+  fs.writeFile(storagelocation+'timetables/cumulative.json', JSON.stringify(cumulativeBusy), 'utf8', function() {
     console.log("saved");
   });
 }
