@@ -21,7 +21,7 @@
 //     pdfParser.loadPDF("test/r102829.pdf");
 //fuction export for module to be called by app.js
 
-var storagelocation = "/timetables/";
+var storagelocation = "./timetables/";
 
 var schedule = require('node-schedule');
 var timetableurl = "http://celcat.rgu.ac.uk/RGU_MAIN_TIMETABLE/";
