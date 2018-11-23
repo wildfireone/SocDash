@@ -3,7 +3,7 @@
  * @Date:   23-Mar-182018
  * @Filename: server.js
  * @Last modified by:   john
- * @Last modified time: 09-Oct-182018
+ * @Last modified time: 23-Nov-182018
  */
 
 // server.js
@@ -56,7 +56,7 @@ timetables.getTimetables();
 //start the server
 
 
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var port =  8080;
 if (args[0]) {
   port = args[0];
 }
