@@ -56,7 +56,7 @@ timetables.getTimetables();
 //start the server
 
 
-var port =  8080;
+var port =  80;
 if (args[0]) {
   port = args[0];
 }
